@@ -37,14 +37,14 @@ var course =
    var randomIndex = Math.floor(Math.random()*course.lectures.length);
    console.log(course.lectures[randomIndex].topic);
    res.send(course.lectures[randomIndex].topic);
-   res.json(course.lectures[randomIndex].topic); //over weekend
+   res.json(course.lectures[randomIndex].topic);
  });
 
  app.get("/labs", function (req, res){
    var randomIndex = Math.floor(Math.random()*course.labs.length);
    console.log(course.labs[randomIndex].topic);
    res.send(course.labs[randomIndex].topic);
-   res.json(course.labs[randomIndex].topic); //over weekend
+   res.json(course.labs[randomIndex].topic);
  });
 
 app.listen(port, function(){
