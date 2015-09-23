@@ -1,52 +1,41 @@
-var express = require("express");
+var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 
-app.use(express.static(__dirname + "/app"));
+var bodyparser = require("body-parser");
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended: true}));
+app.use(express.static(__dirname + '/app/'));
 
-app.get("/", function (req, res){
- res.sendFile();
+var f2search = require("./lib/f2search");
+
+var lectures = require("./lib/lectures_only");
+
+var labs = require("./lib/labs_only");
+
+app.post('/search', function (req, res) {
+  var searchResults = f2search(req.body.searchText, req.body.lucky);
+  res.json(searchResults);
 });
 
-var course =
+app.get('/course_name', function (req, res) {
+  res.json(course.name);
+});
 
-{
-  "level":"201",
-  "name":"Foundations 2",
- "lectures":
-  [
-    {"class": "1","topic":"Paperwork & JS Basics 1"},
-    {"class": "2","topic":"Javascript Basics & Intro to Node"},
-    {"class": "3","topic":"Array Methods, Functions, & Scope Hoisting"},
-    {"class": "4","topic":"OOP in Javascript & Classes/Inheritence"},
-    {"class": "5","topic":"JS in the Browser & Intro to JQuery"},
-    {"class": "6","topic":"Building a Server & Using Ajax"},
-    {"class": "7","topic":"Build & Deploy an App"},
-    {"class": "8","topic":"Functional Programming with Lodash"}
-  ],
+app.get('/lectures', function (req, res) {
+  var lectureResults = lectures(req.body.lectures);
+  res.json(lectureResults);
+});
 
-  "labs":
-  [
-    {"lab": "1","topic":"Lab 1 - Zoo lab"},
-    {"lab": "2","topic":"Lab 2 - Blob lab"},
-    {"lab": "3","topic":"Lab 3 - Last lab"}
-  ]
-}
+app.get('/labs', function (req, res) {
+  var labResults = labs(req.body.labs);
+  res.json(labResults);
+});
 
- app.get("/lectures", function (req, res){
-   var randomIndex = Math.floor(Math.random()*course.lectures.length);
-   console.log(course.lectures[randomIndex].topic);
-   res.send(course.lectures[randomIndex].topic);
-   res.json(course.lectures[randomIndex].topic);
- });
+app.get('/', function (req, res) {
+  res.sendFile();
+});
 
- app.get("/labs", function (req, res){
-   var randomIndex = Math.floor(Math.random()*course.labs.length);
-   console.log(course.labs[randomIndex].topic);
-   res.send(course.labs[randomIndex].topic);
-   res.json(course.labs[randomIndex].topic);
- });
-
-app.listen(port, function(){
-  console.log("server starting. available at http://localhost: " + port);
+app.listen(port, function () {
+  console.log('server started on port ' + port);
 });
